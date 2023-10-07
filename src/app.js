@@ -39,8 +39,8 @@ async function handleEvent(event) {
       return Promise.resolve(null);
   }
 
-  if (!event.message.text.startsWith('大師:')) {
-      console.log('Message does not have the "大師:" prefix. Ignoring...');
+  if (!event.message.text.startsWith('老師')) {
+      console.log('Message does not have the "老師" prefix. Ignoring...');
       return Promise.resolve(null);
   }
 
@@ -50,21 +50,18 @@ async function handleEvent(event) {
         model: 'gpt-3.5-turbo',
         max_tokens: 500,
         messages: [
-            { role: 'user', content: event.message.text.replace('大師:', '') }, // Remove the "大師:" prefix
-            { role: 'system', content: '你好，我是機器人' }
+            { role: 'user', content: event.message.text.replace('老師', '') }, // Remove the "大師:" prefix
+            { role: 'system', content: '你好，我是0安老師助理！' }
         ]
     });
-    console.log('stream:', stream);
   } catch (error) {
     console.error('Error calling OpenAI API:', error);
-    // reply with an error message or handle it appropriately
     return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請聯繫Jerry！' });
   }
 
   const content = stream?.choices[0]?.message?.content;
   console.log('content:', content);
   const message = content || '我不懂你的意思！';
-  // use reply API
   return client.replyMessage(event.replyToken, { type: 'text', text: message });
 }
 
