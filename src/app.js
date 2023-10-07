@@ -55,14 +55,11 @@ async function handleEvent(event) {
           ],
           stream: true
       });
-      for await (const part of stream) {
-        console.log('part:', part);
-        const content = part.choices[0]?.delta?.content;
-        console.log('completions:', content);
-        const message = content || '我不懂你的意思！';
-        // use reply API
-        return client.replyMessage(event.replyToken, { type: 'text', text: message });
-      }
+      const content = stream.choices[0]?.delta?.content;
+      console.log('delta:', stream.choices[0]?.delta);
+      const message = content || '我不懂你的意思！';
+      // use reply API
+      return client.replyMessage(event.replyToken, { type: 'text', text: message });
   } catch (error) {
       console.error('Error calling OpenAI API:', error);
       // reply with an error message or handle it appropriately
