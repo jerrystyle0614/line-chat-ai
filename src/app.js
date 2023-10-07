@@ -50,7 +50,7 @@ async function handleEvent(event) {
           model: 'gpt-4',
           max_tokens: 500,
           messages: [
-              { role: 'user', content: event.message.text.replace('大師：', '') }, // Remove the "大師:" prefix
+              { role: 'user', content: event.message.text.replace('大師:', '') }, // Remove the "大師:" prefix
               { role: 'system', content: '你好，我是機器人' }
           ],
           stream: true
@@ -60,7 +60,7 @@ async function handleEvent(event) {
       // reply with an error message or handle it appropriately
       return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請聯繫Jerry！' });
   }
-  const test  = data.choices[0]?.delta?.content
+  const test  = data.choices?.[0]?.delta?.content
   console.log('test:', test);
   const content = data.choices?.[0]?.message;
   console.log('completions:', data.choices?.[0]?.message);
