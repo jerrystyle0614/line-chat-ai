@@ -44,7 +44,7 @@ async function handleEvent(event) {
       return Promise.resolve(null);
   }
 
-  let data;
+  let stream;
   try {
     stream = await openai.chat.completions.create({
           model: 'gpt-4',
