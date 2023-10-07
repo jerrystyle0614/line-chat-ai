@@ -46,7 +46,7 @@ async function handleEvent(event) {
 
   let data;
   try {
-      data = await openai.chat.completions.create({
+    stream = await openai.chat.completions.create({
           model: 'gpt-4',
           max_tokens: 500,
           messages: [
@@ -55,21 +55,19 @@ async function handleEvent(event) {
           ],
           stream: true
       });
+      for await (const part of stream) {
+        console.log('part:', part);
+        const content = part.choices[0]?.delta?.content;
+        console.log('completions:', content);
+        const message = content || '我不懂你的意思！';
+        // use reply API
+        return client.replyMessage(event.replyToken, { type: 'text', text: message });
+      }
   } catch (error) {
       console.error('Error calling OpenAI API:', error);
       // reply with an error message or handle it appropriately
       return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請聯繫Jerry！' });
   }
-  const test  = data.choices?.[0]?.delta?.content
-  console.log('test:', test);
-  const content = data.choices?.[0]?.message;
-  console.log('completions:', data.choices?.[0]?.message);
-  const message = content || '我不懂你的意思！';
-
-  console.log('message:', message);
-
-  // use reply API
-  return client.replyMessage(event.replyToken, { type: 'text', text: message });
 }
 
 // listen on port
