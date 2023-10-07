@@ -47,23 +47,23 @@ async function handleEvent(event) {
   let data;
   try {
       data = await openai.chat.completions.create({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4',
           max_tokens: 500,
           messages: [
-              { role: 'user', content: event.message.text.replace('大師:', '') }, // Remove the "大師:" prefix
+              { role: 'user', content: event.message.text.replace('大師：', '') }, // Remove the "大師:" prefix
               { role: 'system', content: '你好，我是機器人' }
-          ]
+          ],
+          stream: true
       });
   } catch (error) {
       console.error('Error calling OpenAI API:', error);
       // reply with an error message or handle it appropriately
-      return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請稍後再試。' });
+      return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請聯繫Jerry！' });
   }
 
-  console.log('completions:', data);
-
-  const content = data.choices?.[0]?.delta?.content;
-  const message = content || '抱歉，我沒有話可說了。';
+  const content = data.choices?.[0]?.message?.content;
+  console.log('completions:', content);
+  const message = content || '我不懂你的意思！';
 
   console.log('message:', message);
 
