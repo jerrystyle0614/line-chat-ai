@@ -39,8 +39,8 @@ async function handleEvent(event) {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
-
-  const stream = await openai.chat.completions.create({
+  console.log('line event:', event);
+  const data = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     max_tokens: 500,
     messages: [
@@ -52,15 +52,14 @@ async function handleEvent(event) {
         role: 'system',
         content: '你好，我是機器人',
       }
-    ],
-    stream: true,
+    ]
   });
-
-  const { choices } = stream;
+  console.log('completions:', data);
+  const { choices } = data;
   const content = choices[0]?.delta?.content;
   const message = content || '抱歉，我沒有話可說了。';
   const echo = { type: 'text', text: message };
-
+  console.log('message:', message);
   // use reply API
   return client.replyMessage(event.replyToken, echo);
 }
