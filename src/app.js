@@ -60,9 +60,10 @@ async function handleEvent(event) {
       // reply with an error message or handle it appropriately
       return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請聯繫Jerry！' });
   }
-
-  const content = data.choices?.[0]?.message?.content;
-  console.log('completions:', content);
+  const test  = data.choices[0]?.delta?.content
+  console.log('test:', test);
+  const content = data.choices?.[0]?.message;
+  console.log('completions:', data.choices?.[0]?.message);
   const message = content || '我不懂你的意思！';
 
   console.log('message:', message);
