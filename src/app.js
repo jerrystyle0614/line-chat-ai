@@ -61,7 +61,7 @@ async function handleEvent(event) {
     return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請聯繫Jerry！' });
   }
 
-  const content = stream?.choices[0]?.message;
+  const content = stream?.choices[0]?.message?.content;
   console.log('content:', content);
   const message = content || '我不懂你的意思！';
   // use reply API
