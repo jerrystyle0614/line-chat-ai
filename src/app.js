@@ -55,8 +55,9 @@ async function handleEvent(event) {
           ],
           stream: true
       });
-      const content = stream.choices[0]?.delta?.content;
-      console.log('delta:', stream.choices[0]?.delta);
+      console.log('stream:', stream);
+      const content = stream?.choices[0]?.delta?.content;
+      console.log('delta:', stream?.choices[0]?.delta);
       const message = content || '我不懂你的意思！';
       // use reply API
       return client.replyMessage(event.replyToken, { type: 'text', text: message });
