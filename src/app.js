@@ -36,32 +36,39 @@ app.post('/callback', line.middleware(config), (req, res) => {
 // event handler
 async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
-    // ignore non-text-message event
-    return Promise.resolve(null);
+      return Promise.resolve(null);
   }
-  console.log('line event:', event);
-  const data = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    max_tokens: 500,
-    messages: [
-      { 
-        role: 'user', 
-        content: event.message.text
-      },
-      {
-        role: 'system',
-        content: '你好，我是機器人',
-      }
-    ]
-  });
+
+  if (!event.message.text.startsWith('大師:')) {
+      console.log('Message does not have the "大師:" prefix. Ignoring...');
+      return Promise.resolve(null);
+  }
+
+  let data;
+  try {
+      data = await openai.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          max_tokens: 500,
+          messages: [
+              { role: 'user', content: event.message.text.replace('大師:', '') }, // Remove the "大師:" prefix
+              { role: 'system', content: '你好，我是機器人' }
+          ]
+      });
+  } catch (error) {
+      console.error('Error calling OpenAI API:', error);
+      // reply with an error message or handle it appropriately
+      return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請稍後再試。' });
+  }
+
   console.log('completions:', data);
-  const { choices } = data;
-  const content = choices[0]?.delta?.content;
+
+  const content = data.choices?.[0]?.delta?.content;
   const message = content || '抱歉，我沒有話可說了。';
-  const echo = { type: 'text', text: message };
+
   console.log('message:', message);
+
   // use reply API
-  return client.replyMessage(event.replyToken, echo);
+  return client.replyMessage(event.replyToken, { type: 'text', text: message });
 }
 
 // listen on port
