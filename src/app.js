@@ -47,25 +47,25 @@ async function handleEvent(event) {
   let stream;
   try {
     stream = await openai.chat.completions.create({
-          model: 'gpt-4',
-          max_tokens: 500,
-          messages: [
-              { role: 'user', content: event.message.text.replace('大師:', '') }, // Remove the "大師:" prefix
-              { role: 'system', content: '你好，我是機器人' }
-          ],
-          stream: true
-      });
-      console.log('stream:', stream);
-      const content = stream?.choices[0]?.delta;
-      console.log('content:', content);
-      const message = content || '我不懂你的意思！';
-      // use reply API
-      return client.replyMessage(event.replyToken, { type: 'text', text: message });
+        model: 'gpt-3.5-turbo',
+        max_tokens: 500,
+        messages: [
+            { role: 'user', content: event.message.text.replace('大師:', '') }, // Remove the "大師:" prefix
+            { role: 'system', content: '你好，我是機器人' }
+        ]
+    });
+    console.log('stream:', stream);
   } catch (error) {
-      console.error('Error calling OpenAI API:', error);
-      // reply with an error message or handle it appropriately
-      return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請聯繫Jerry！' });
+    console.error('Error calling OpenAI API:', error);
+    // reply with an error message or handle it appropriately
+    return client.replyMessage(event.replyToken, { type: 'text', text: '發生錯誤，請聯繫Jerry！' });
   }
+
+  const content = stream?.choices[0]?.message;
+  console.log('content:', content);
+  const message = content || '我不懂你的意思！';
+  // use reply API
+  return client.replyMessage(event.replyToken, { type: 'text', text: message });
 }
 
 // listen on port
