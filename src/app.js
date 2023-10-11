@@ -49,7 +49,7 @@ async function handleEvent(event) {
     stream = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         max_tokens: 500,
-        temperature: 0.8,
+        temperature: 1,
         messages: [
             { role: 'user', content: event.message.text.replace('老師', '') }, // Remove the "大師:" prefix
             { role: 'system', content: '你好，我是0安老師助理！' }
