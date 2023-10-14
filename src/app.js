@@ -39,18 +39,18 @@ async function handleEvent(event) {
       return Promise.resolve(null);
   }
   console.log('line event:', event);
-  if (!event.message.text.startsWith('老師')) {
+  if (!event.message.text.startsWith('老師，')) {
       console.log('Message does not have the "老師" prefix. Ignoring...');
       return Promise.resolve(null);
   }
 
   let stream;
   try {
-    const userMessage = event.message.text.replace('老師', '');
+    const userMessage = event.message.text.replace('老師，', '');
     console.log('User Message:', userMessage);
     stream = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
-        max_tokens: 600,
+        max_tokens: 800,
         temperature: 1,
         messages: [
           { role: 'user', content: userMessage },
